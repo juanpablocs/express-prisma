@@ -17,8 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get("/", (_req, res: Response) => {
+  console.log('ELASTIC_SERVER', process.env.ELASTIC_SERVER);
   client.ping({
-    requestTimeout: 30000,
+    requestTimeout: 3000,
     }, function(error: any) {
     if (error) {
     console.error('ERR: Cannot connect to Elasticsearch.');
