@@ -1,4 +1,9 @@
 import express, { Application, Request, Response } from "express";
+var elasticsearch = require('elasticsearch');
+
+var client = new elasticsearch.Client({
+hosts: [process.env.ELASTIC_SERVER]
+});
 
 import { PrismaClient } from "@prisma/client";
 import { addNewPost, Params } from "./addNewPost";
@@ -12,6 +17,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.get("/", (_req, res: Response) => {
+  client.ping({
+    requestTimeout: 30000,
+    }, function(error: any) {
+    if (error) {
+    console.error('ERR: Cannot connect to Elasticsearch.');
+    } else {
+    console.log('Connected to Elasticsearch was successful!');
+    }
+    });
   res.send(`Server is running on port: ${port}`);
 });
 
