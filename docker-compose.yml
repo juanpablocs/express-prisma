@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    container_name: local-viauto
+    environment:
+      MYSQL_DATABASE: 'viauto'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - '3306:3306'
+    volumes:
+      - db:/var/lib/mysql
+
+  prisma-app:
+    stdin_open: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: prisma-api
+    depends_on:
+      - db
+    links:
+      - db
+    ports:
+      - "3000:3000"
+    restart: always
+volumes:
+  db:
+    driver: local
